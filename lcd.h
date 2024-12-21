@@ -6,9 +6,6 @@
 #include "hardware/i2c.h"
 #include "pico/binary_info.h"
 
-#include "FreeRTOS.h"
-#include "task.h"
-
 // commands
 const int LCD_CLEARDISPLAY = 0x01;
 const int LCD_RETURNHOME = 0x02;
@@ -119,28 +116,4 @@ void lcd_init() {
     lcd_send_byte(LCD_FUNCTIONSET | LCD_2LINE, LCD_COMMAND);
     lcd_send_byte(LCD_DISPLAYCONTROL | LCD_DISPLAYON, LCD_COMMAND);
     lcd_clear();
-}
-
-int lcdinit() {
-    lcd_init();
-
-    static char *message[] =
-            {
-                    "Hello Fagmoney",
-                    "A brand new", "OS",
-                    "Twin core M0", "Full C SDK",
-                    "More power in", "LORA",
-                    "More straight", "than Fagmoney!"
-            };
-
-    while (1) {
-        for (uint m = 0; m < sizeof(message) / sizeof(message[0]); m += MAX_LINES) {
-            for (int line = 0; line < MAX_LINES; line++) {
-                lcd_set_cursor(line, (MAX_CHARS / 2) - strlen(message[m + line]) / 2);
-                lcd_string(message[m + line]);
-            }
-            vTaskDelay(2000);
-            lcd_clear();
-        }
-    }
 }
